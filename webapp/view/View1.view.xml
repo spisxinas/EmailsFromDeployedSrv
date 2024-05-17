@@ -1,0 +1,16 @@
+<mvc:View controllerName="project2.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
+    xmlns="sap.m">
+     <Page title="Email List">
+        <content>
+            <List  items="{/GetStudents}">
+                <items>
+                    <ObjectListItem
+                        title= "{email}"
+                        
+                    />
+                </items>
+            </List>
+        </content>
+    </Page>
+</mvc:View>

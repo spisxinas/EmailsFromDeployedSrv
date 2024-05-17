@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+        <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="mysrvdemoapp" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="GetContent" EntityType="mysrvdemoapp.GetContent">
+                    <NavigationPropertyBinding Path="course" Target="GetCourse"/>
+                </EntitySet>
+                <EntitySet Name="GetCourse" EntityType="mysrvdemoapp.GetCourse">
+                    <NavigationPropertyBinding Path="content" Target="GetContent"/>
+                    <NavigationPropertyBinding Path="enrollment" Target="GetEnrollment"/>
+                </EntitySet>
+                <EntitySet Name="GetEnrollment" EntityType="mysrvdemoapp.GetEnrollment">
+                    <NavigationPropertyBinding Path="course" Target="GetCourse"/>
+                    <NavigationPropertyBinding Path="student" Target="GetStudents"/>
+                </EntitySet>
+                <EntitySet Name="GetStudents" EntityType="mysrvdemoapp.GetStudents">
+                    <NavigationPropertyBinding Path="enrollment" Target="GetEnrollment"/>
+                </EntitySet>
+            </EntityContainer>
+            <EntityType Name="GetContent">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="url" Type="Edm.String" MaxLength="2048"/>
+                <Property Name="dataPublished" Type="Edm.Date"/>
+                <Property Name="contentType" Type="Edm.String"/>
+                <NavigationProperty Name="course" Type="mysrvdemoapp.GetCourse" Partner="content">
+                    <ReferentialConstraint Property="course_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="course_ID" Type="Edm.Int32"/>
+            </EntityType>
+            <EntityType Name="GetCourse">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Int32" Nullable="false"/>
+                <Property Name="courseName" Type="Edm.String" MaxLength="400"/>
+                <Property Name="courseDuration" Type="Edm.Decimal" Scale="variable"/>
+                <Property Name="coursePrice" Type="Edm.Decimal" Precision="5" Scale="2"/>
+                <Property Name="publishedStatus" Type="Edm.Boolean"/>
+                <NavigationProperty Name="content" Type="Collection(mysrvdemoapp.GetContent)" Partner="course"/>
+                <NavigationProperty Name="enrollment" Type="Collection(mysrvdemoapp.GetEnrollment)" Partner="course"/>
+            </EntityType>
+            <EntityType Name="GetEnrollment">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Int32" Nullable="false"/>
+                <NavigationProperty Name="course" Type="mysrvdemoapp.GetCourse" Partner="enrollment">
+                    <ReferentialConstraint Property="course_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <Property Name="course_ID" Type="Edm.Int32"/>
+                <NavigationProperty Name="student" Type="mysrvdemoapp.GetStudents" Partner="enrollment">
+                    <ReferentialConstraint Property="student_email" ReferencedProperty="email"/>
+                </NavigationProperty>
+                <Property Name="student_email" Type="Edm.String" MaxLength="70"/>
+            </EntityType>
+            <EntityType Name="GetStudents">
+                <Key>
+                    <PropertyRef Name="email"/>
+                </Key>
+                <Property Name="email" Type="Edm.String" MaxLength="70" Nullable="false"/>
+                <Property Name="firstName" Type="Edm.String" MaxLength="40"/>
+                <Property Name="lastName" Type="Edm.String" MaxLength="40"/>
+                <Property Name="dataSignUp" Type="Edm.Date"/>
+                <NavigationProperty Name="enrollment" Type="Collection(mysrvdemoapp.GetEnrollment)" Partner="student"/>
+            </EntityType>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
